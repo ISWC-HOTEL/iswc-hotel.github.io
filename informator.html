@@ -43,6 +43,7 @@
     color:#fff;
     padding:22px 18px 18px;
     border-radius:0 0 22px 22px;
+    text-align:center;position:relative;
   }
   header h1{font-size:1.35rem;font-weight:700;}
   header .hotel{font-size:.95rem;opacity:.92;margin-top:2px;}
@@ -52,16 +53,17 @@
     padding:4px 14px;font-size:.9rem;font-weight:600;
   }
   .pasek-gorny{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:10px;margin-bottom:10px;
+    display:flex;flex-direction:column;align-items:center;
+    gap:10px;margin-bottom:10px;padding-top:26px;
   }
-  .loga{display:flex;gap:8px;align-items:center;}
+  .loga{display:flex;gap:10px;align-items:center;justify-content:center;}
   .loga img{
-    height:46px;width:auto;display:block;background:#fff;
+    height:52px;width:auto;display:block;background:#fff;
     border-radius:10px;padding:5px 8px;
   }
   .lang-switch{
-    display:flex;gap:8px;justify-content:flex-end;
+    display:flex;gap:8px;
+    position:absolute;top:12px;right:12px;
   }
   .lang-switch button{
     background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.5);
@@ -118,11 +120,6 @@
     color:#fff;display:flex;align-items:center;justify-content:center;
     font-size:.85rem;font-weight:700;
   }
-  .foto{
-    width:100%;max-height:220px;object-fit:cover;display:block;
-    border-radius:16px;margin:2px 0 14px;
-    box-shadow:0 2px 8px rgba(60,100,30,.12);
-  }
   footer{
     text-align:center;font-size:.8rem;color:var(--szary);padding:20px 12px;
   }
@@ -159,10 +156,6 @@
 </header>
 
 <main>
-
-  <!-- ZDJĘCIE 1: wrzuć do folderu plik o nazwie  zdjecie-1.jpg
-       (np. lobby albo pokój). Brak pliku = miejsce samo się ukryje. -->
-  <img class="foto" src="zdjecie-1.jpg" alt="" onerror="this.style.display='none'">
 
   <!-- ═══════════ ZAMELDOWANIE / WYMELDOWANIE ═══════════ -->
   <details class="sekcja" open>
@@ -376,10 +369,6 @@
     </div>
   </details>
 
-  <!-- ZDJĘCIE 2: wrzuć do folderu plik o nazwie  zdjecie-2.jpg
-       (np. widok na Warszawę / okolicę hotelu). -->
-  <img class="foto" src="zdjecie-2.jpg" alt="" onerror="this.style.display='none'">
-
   <!-- ═══════════ OKOLICA ═══════════ -->
   <details class="sekcja">
     <summary class="naglowek">
@@ -521,17 +510,14 @@ function ustawJezyk(j){
     b.innerHTML = '<span class="lang-pl">Pokój ' + pokoj + '</span><span class="lang-en">Room ' + pokoj + '</span>';
   }
   // strzałka SVG obracana w kierunku ewakuacji (lewo / prawo / prosto)
+  // — sama grafika, bez podpisu słownego
   var obroty = { lewo:-90, prawo:90, prosto:0 };
-  var opisPL = { lewo:'w lewo', prawo:'w prawo', prosto:'prosto' };
-  var opisEN = { lewo:'turn left', prawo:'turn right', prosto:'straight ahead' };
   if(obroty.hasOwnProperty(ewak)){
     document.getElementById('ewak-strzalka').style.display = 'none';
+    document.getElementById('ewak-kierunek').style.display = 'none';
     var svg = document.getElementById('ewak-svg');
     svg.style.display = 'block';
     svg.style.transform = 'rotate(' + obroty[ewak] + 'deg)';
-    document.getElementById('ewak-kierunek').innerHTML =
-      '<span class="lang-pl">' + opisPL[ewak] + '</span>' +
-      '<span class="lang-en">' + opisEN[ewak] + '</span>';
   }
 })();
 </script>
