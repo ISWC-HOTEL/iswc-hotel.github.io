@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informator dla Gości | ibis Styles Warszawa City</title>
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  INFORMATOR HOTELOWY — ibis Styles Warszawa City
+  ═══════════════════════════════════════════════════════════════════
+  JAK EDYTOWAĆ TREŚCI:
+  1. Otwórz ten plik w Notatniku (prawy przycisk -> Otwórz za pomocą -> Notatnik)
+  2. Szukaj komentarzy:  EDYTUJ TUTAJ
+  3. Każdy tekst jest podwójnie: wersja polska (lang-pl) i angielska (lang-en).
+     Zmieniając coś po polsku, popraw też wersję angielską obok.
+  4. Zapisz plik i wgraj ponownie na hosting (patrz INSTRUKCJA.txt)
+
+  MIEJSCA OZNACZONE [UZUPEŁNIJ] wymagają wpisania prawdziwych danych hotelu!
+  ═══════════════════════════════════════════════════════════════════
+-->
+<style>
+  :root{
+    /* ─── KOLORYSTYKA IBIS STYLES — zieleń z logo „poducha" ─── */
+    --ziel-glowna:#76b82a;  /* zieleń ibis Styles, odrobinę zmiękczona */
+    --ziel-ciemna:#4d8a1f;  /* ciemniejsza zieleń — gradienty, akcenty, linki */
+    --ziel:#76b82a;         /* zieleń ramki ewakuacyjnej */
+    --zolty:#ffc20e;
+    --tlo:#f6faf1;          /* bardzo jasna zieleń — tło strony */
+    --karta:#ffffff;
+    --tekst:#2b2b2b;
+    --szary:#6b6b6b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Segoe UI',Roboto,Arial,sans-serif;
+    background:var(--tlo);
+    color:var(--tekst);
+    line-height:1.5;
+    padding-bottom:60px;
+  }
+  header{
+    background:linear-gradient(135deg,var(--ziel-glowna) 0%,var(--ziel-ciemna) 100%);
+    color:#fff;
+    padding:22px 18px 18px;
+    border-radius:0 0 22px 22px;
+  }
+  header h1{font-size:1.35rem;font-weight:700;}
+  header .hotel{font-size:.95rem;opacity:.92;margin-top:2px;}
+  header .pokoj{
+    display:inline-block;margin-top:10px;background:rgba(255,255,255,.18);
+    border:1px solid rgba(255,255,255,.4);border-radius:999px;
+    padding:4px 14px;font-size:.9rem;font-weight:600;
+  }
+  .pasek-gorny{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;margin-bottom:10px;
+  }
+  .loga{display:flex;gap:8px;align-items:center;}
+  .loga img{
+    height:46px;width:auto;display:block;background:#fff;
+    border-radius:10px;padding:5px 8px;
+  }
+  .lang-switch{
+    display:flex;gap:8px;justify-content:flex-end;
+  }
+  .lang-switch button{
+    background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.5);
+    color:#fff;border-radius:999px;padding:5px 14px;font-size:.85rem;
+    cursor:pointer;font-weight:600;
+  }
+  .lang-switch button.active{background:#fff;color:var(--ziel-ciemna);}
+  main{max-width:640px;margin:0 auto;padding:16px 12px;}
+  .sekcja{
+    background:var(--karta);border-radius:16px;margin-bottom:12px;
+    box-shadow:0 2px 8px rgba(60,100,30,.08);overflow:hidden;
+  }
+  .sekcja>summary.naglowek{
+    width:100%;display:flex;align-items:center;gap:12px;
+    background:none;border:none;padding:15px 16px;cursor:pointer;
+    font-size:1.02rem;font-weight:600;color:var(--tekst);text-align:left;
+    list-style:none;
+  }
+  .sekcja>summary.naglowek::-webkit-details-marker{display:none;}
+  .sekcja .ikona{
+    flex:0 0 38px;height:38px;border-radius:12px;display:flex;
+    align-items:center;justify-content:center;font-size:1.25rem;
+  }
+  .sekcja .strzalka{margin-left:auto;transition:transform .25s;color:var(--szary);}
+  .sekcja[open] .strzalka{transform:rotate(90deg);}
+  .sekcja .tresc{padding:0 16px 16px 16px;font-size:.95rem;}
+  .tresc h3{font-size:.95rem;color:var(--ziel-ciemna);margin:12px 0 4px;}
+  .tresc ul{padding-left:20px;margin:6px 0;}
+  .tresc li{margin-bottom:4px;}
+  .tresc p{margin:6px 0;}
+  .tag{
+    display:inline-block;background:var(--tlo);border-radius:8px;
+    padding:2px 10px;font-size:.85rem;font-weight:600;color:var(--ziel-ciemna);
+    margin:2px 4px 2px 0;
+  }
+  table.oplaty{width:100%;border-collapse:collapse;margin:8px 0;font-size:.9rem;}
+  table.oplaty td{padding:7px 6px;border-bottom:1px solid #eee;}
+  table.oplaty td:last-child{text-align:right;font-weight:600;white-space:nowrap;}
+  .uwaga{
+    background:#fff6e0;border-left:4px solid var(--zolty);
+    border-radius:8px;padding:10px 12px;margin:10px 0;font-size:.9rem;
+  }
+  /* ─── EWAKUACJA ─── */
+  .ewak-box{
+    background:#e8f6d8;border:2px solid var(--ziel);border-radius:14px;
+    padding:16px;text-align:center;margin:10px 0;
+  }
+  .ewak-box .strzalka-ewak{font-size:4.5rem;line-height:1;display:block;margin:6px 0;}
+  .ewak-box svg{width:110px;height:110px;display:none;margin:8px auto;}
+  .ewak-box .kierunek{font-size:1.15rem;font-weight:800;color:#3d7a00;text-transform:uppercase;}
+  .krok{display:flex;gap:10px;margin:8px 0;align-items:flex-start;}
+  .krok .nr{
+    flex:0 0 26px;height:26px;border-radius:50%;background:var(--ziel-glowna);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:.85rem;font-weight:700;
+  }
+  .foto{
+    width:100%;max-height:220px;object-fit:cover;display:block;
+    border-radius:16px;margin:2px 0 14px;
+    box-shadow:0 2px 8px rgba(60,100,30,.12);
+  }
+  footer{
+    text-align:center;font-size:.8rem;color:var(--szary);padding:20px 12px;
+  }
+  a{color:var(--ziel-ciemna);}
+  /* przełącznik języka: domyślnie PL */
+  .lang-en{display:none;}
+  body.en .lang-pl{display:none;}
+  body.en .lang-en{display:block;}
+  span.lang-en, td.lang-en, li.lang-en{display:none;}
+  body.en span.lang-en{display:inline;}
+  body.en td.lang-en{display:table-cell;}
+  body.en li.lang-en{display:list-item;}
+  body.en span.lang-pl, body.en td.lang-pl, body.en li.lang-pl{display:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="pasek-gorny">
+    <!-- LOGA: pliki logo-ibis.jpg (poducha) i logo-tramwaj.jpg (tramwaj)
+         leżą w tym samym folderze. Jeśli pliku brakuje, miejsce się ukryje. -->
+    <div class="loga">
+      <img src="logo-ibis.jpg" alt="ibis Styles" onerror="this.style.display='none'">
+      <img src="logo-tramwaj.jpg" alt="" onerror="this.style.display='none'">
+    </div>
+    <div class="lang-switch">
+      <button id="btn-pl" class="active" onclick="ustawJezyk('pl')">PL</button>
+      <button id="btn-en" onclick="ustawJezyk('en')">EN</button>
+    </div>
+  </div>
+  <h1><span class="lang-pl">Witamy w hotelu!</span><span class="lang-en">Welcome to the hotel!</span></h1>
+  <div class="hotel">ibis Styles Warszawa City</div>
+  <div class="pokoj" id="pokoj-badge" style="display:none;"></div>
+</header>
+
+<main>
+
+  <!-- ZDJĘCIE 1: wrzuć do folderu plik o nazwie  zdjecie-1.jpg
+       (np. lobby albo pokój). Brak pliku = miejsce samo się ukryje. -->
+  <img class="foto" src="zdjecie-1.jpg" alt="" onerror="this.style.display='none'">
+
+  <!-- ═══════════ ZAMELDOWANIE / WYMELDOWANIE ═══════════ -->
+  <details class="sekcja" open>
+    <summary class="naglowek">
+      <span class="ikona" style="background:#edf6e0;">🕑</span>
+      <span class="lang-pl">Zameldowanie i wymeldowanie</span><span class="lang-en">Check-in &amp; check-out</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <!-- EDYTUJ TUTAJ: godziny doby hotelowej -->
+      <p><span class="tag">Check-in: od 15:00</span> <span class="tag">Check-out: do 11:00</span></p>
+      <div class="lang-pl">
+        <p>Późne wymeldowanie? Zapytaj w recepcji o dostępność — usługa płatna wg cennika poniżej (sekcja „Opłaty dodatkowe").</p>
+        <p>Recepcja czynna <strong>24/7</strong> — tel. wewnętrzny <strong>9</strong>.</p>
+      </div>
+      <div class="lang-en">
+        <p>Need a late check-out? Ask reception about availability — see the "Extra charges" section for the fee.</p>
+        <p>Reception is open <strong>24/7</strong> — internal phone <strong>9</strong>.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════ ŚNIADANIA ═══════════ -->
+  <details class="sekcja">
+    <summary class="naglowek">
+      <span class="ikona" style="background:#fff3d6;">🥐</span>
+      <span class="lang-pl">Śniadania</span><span class="lang-en">Breakfast</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <!-- EDYTUJ TUTAJ: godziny i miejsce śniadań -->
+      <div class="lang-pl">
+        <p><span class="tag">Pn–Pt: 6:30 – 10:00</span> <span class="tag">Sb–Nd i święta: 6:30 – 11:00</span></p>
+        <p>Śniadania w formie bufetu serwujemy w restauracji na <strong>7 piętrze</strong>.</p>
+        <p>Śniadanie nie było w Twojej ofercie? Możesz je dokupić w recepcji — <strong>100 zł/os.</strong></p>
+        <p>Opcje bezglutenowe i wegetariańskie — zapytaj obsługę restauracji.</p>
+      </div>
+      <div class="lang-en">
+        <p><span class="tag">Mon–Fri: 6:30 – 10:00</span> <span class="tag">Weekends &amp; holidays: 6:30 – 11:00</span></p>
+        <p>Buffet breakfast is served in the restaurant on the <strong>7th floor</strong>.</p>
+        <p>Breakfast not included in your rate? You can add it at reception — <strong>PLN 100 /person</strong>.</p>
+        <p>Gluten-free and vegetarian options available — just ask our restaurant team.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════ WIFI + KONTAKT (3) ═══════════ -->
+  <details class="sekcja">
+    <summary class="naglowek">
+      <span class="ikona" style="background:#e0f2fe;">📶</span>
+      <span class="lang-pl">Wi-Fi i kontakt z recepcją</span><span class="lang-en">Wi-Fi &amp; reception contact</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <!-- EDYTUJ TUTAJ: dane wifi i telefony -->
+      <p><span class="tag">Sieć / Network: Hotel Ibis Styles</span> <span class="tag">Hasło / Password: BEZ HASŁA/NO PASSWORD</span></p>
+      <div class="lang-pl">
+        <p>Recepcja 24/7: tel. wewnętrzny <strong>9</strong> (z telefonu w pokoju) lub <strong>+48 22 488 33 00</strong> z komórki.</p>
+      </div>
+      <div class="lang-en">
+        <p>Reception 24/7: dial <strong>9</strong> from your room phone, or <strong>+48 22 488 33 00</strong> from your mobile.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════ EWAKUACJA (4) ═══════════ -->
+  <details class="sekcja" open id="sekcja-ewakuacja">
+    <summary class="naglowek">
+      <span class="ikona" style="background:#dcfce7;">🚪</span>
+      <span class="lang-pl">Droga ewakuacyjna</span><span class="lang-en">Emergency exit route</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <div class="ewak-box" id="ewak-box">
+        <!-- strzałka wstawiana automatycznie na podstawie linku QR -->
+        <span class="lang-pl" style="display:block;">Po wyjściu z pokoju:</span>
+        <span class="lang-en" style="display:block;">After leaving your room:</span>
+        <span class="strzalka-ewak" id="ewak-strzalka">🧭</span>
+        <!-- duża strzałka kierunkowa — obraca się wg linku QR (lewo/prawo/prosto) -->
+        <svg id="ewak-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M50 10 L82 50 H62 V90 H38 V50 H18 Z"
+                fill="#3d7a00" stroke="#3d7a00" stroke-width="6" stroke-linejoin="round"/>
+        </svg>
+        <div class="kierunek" id="ewak-kierunek">
+          <span class="lang-pl">sprawdź plan ewakuacji na drzwiach pokoju</span>
+          <span class="lang-en">check the evacuation plan on your room door</span>
+        </div>
+      </div>
+      <div class="lang-pl">
+        <ul>
+          <li>Najbliższa klatka ewakuacyjna oznaczona jest zielonymi znakami <strong>„WYJŚCIE / EXIT"</strong>.</li>
+          <li>W razie alarmu <strong>nie korzystaj z wind</strong> — tylko schody.</li>
+          <li>Zabierz dokumenty, zostaw bagaż. Zamknij drzwi pokoju (nie na klucz).</li>
+          <li>Punkt zbiórki: <strong>Przestrzeń przed hotelem od ul. Grzybowskiej</strong>.</li>
+          <li>Numer alarmowy: <strong>112</strong> · Recepcja: <strong>9</strong>.</li>
+        </ul>
+      </div>
+      <div class="lang-en">
+        <ul>
+          <li>The nearest evacuation staircase is marked with green <strong>"EXIT"</strong> signs.</li>
+          <li>In case of alarm <strong>do not use the lifts</strong> — stairs only.</li>
+          <li>Take your documents, leave your luggage. Close (don't lock) your room door.</li>
+          <li>Assembly point: <strong>The space in front of the hotel from Grzybowska Street</strong>.</li>
+          <li>Emergency number: <strong>112</strong> · Reception: <strong>9</strong>.</li>
+        </ul>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════ KLIMATYZACJA (5) ═══════════ -->
+  <details class="sekcja">
+    <summary class="naglowek">
+      <span class="ikona" style="background:#dcfce7;">❄️</span>
+      <span class="lang-pl">Klimatyzacja — jak obsługiwać</span><span class="lang-en">Air conditioning — how to use</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <!-- EDYTUJ TUTAJ: dopasuj do modelu klimatyzacji w hotelu -->
+      <div class="lang-pl">
+        <div class="krok"><span class="nr">1</span><p>Panel sterowania znajduje się <strong>na ścianie przy drzwiach</strong>.</p></div>
+        <div class="krok"><span class="nr">2</span><p>Włącz/wyłącz przyciskiem <strong>⏻ (ON/OFF)</strong>.</p></div>
+        <div class="krok"><span class="nr">3</span><p>Strzałkami <strong>▲ ▼</strong> ustaw temperaturę (zalecane 21–23°C).</p></div>
+        <div class="krok"><span class="nr">4</span><p>Klimatyzacja działa przy <strong>zamkniętym oknie</strong> — po otwarciu okna system wstrzymuje chłodzenie.</p></div>
+        <p class="uwaga">Klimatyzacja nie działa mimo powyższych kroków? Zgłoś to w recepcji — sprawdzimy od ręki.</p>
+      </div>
+      <div class="lang-en">
+        <div class="krok"><span class="nr">1</span><p>The control panel is located <strong>on the wall by the door</strong>.</p></div>
+        <div class="krok"><span class="nr">2</span><p>Turn on/off with the <strong>⏻ (ON/OFF)</strong> button.</p></div>
+        <div class="krok"><span class="nr">3</span><p>Set the temperature with the <strong>▲ ▼</strong> arrows (21–23°C recommended).</p></div>
+        <div class="krok"><span class="nr">4</span><p>The A/C works only with the <strong>window closed</strong> — opening the window pauses cooling.</p></div>
+        <p class="uwaga">A/C still not working? Let reception know — we'll check it right away.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════ HOUSEKEEPING (6) ═══════════ -->
+  <details class="sekcja">
+    <summary class="naglowek">
+      <span class="ikona" style="background:#e0f2fe;">🧹</span>
+      <span class="lang-pl">Sprzątanie pokoju (housekeeping)</span><span class="lang-en">Housekeeping</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <!-- EDYTUJ TUTAJ: zasady housekeepingu -->
+      <div class="lang-pl">
+        <ul>
+          <li>Pokoje sprzątamy codziennie w godz. <strong>8:00 – 15:00</strong>.</li>
+          <li>Nie chcesz sprzątania? Zawieś na klamce zawieszkę „Pozwól nam śnić".</li>
+          <li>Wymiana ręczników: ręczniki pozostawione <strong>na podłodze / w wannie</strong> wymienimy na świeże. Ręczniki powieszone — zostają (dbamy razem o środowisko 🌱).</li>
+          <li>Pościel wymieniamy co <strong>3 doby</strong> przy pobytach dłuższych.</li>
+          <li>Potrzebujesz dodatkowej poduszki, koca, kosmetyków? Zadzwoń do recepcji.</li>
+        </ul>
+      </div>
+      <div class="lang-en">
+        <ul>
+          <li>Rooms are serviced daily between <strong>8:00 AM – 3:00 PM</strong>.</li>
+          <li>Prefer no service? Hang the "Let Us Sleep" sign on your door.</li>
+          <li>Towel change: towels left <strong>on the floor / in the bathtub</strong> will be replaced. Towels hung up stay with you (let's protect the environment together 🌱).</li>
+          <li>Bed linen is changed every <strong>3 nights</strong> during longer stays.</li>
+          <li>Need an extra pillow, blanket or toiletries? Call reception.</li>
+        </ul>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════ ROOM SERVICE — MUNJA (6a) ═══════════ -->
+  <details class="sekcja">
+    <summary class="naglowek">
+      <span class="ikona" style="background:#fff3d6;">🍽️</span>
+      <span class="lang-pl">Room service — restauracja Munja</span><span class="lang-en">Room service — Munja restaurant</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <!-- EDYTUJ TUTAJ: godziny room service, telefon, link do menu PDF (dodamy po wgraniu na GitHub) -->
+      <div class="lang-pl">
+        <p>Zamów dania i napoje z restauracji <strong>Munja</strong> prosto do pokoju.</p>
+        <p><span class="tag">Room service: [UZUPEŁNIJ: np. 12:00 – 22:00]</span></p>
+        <p>Zamówienia: tel. wewnętrzny <strong>[UZUPEŁNIJ]</strong> lub w recepcji.</p>
+        <p>📖 <a href="[UZUPEŁNIJ: link do menu-munja.pdf]">Zobacz menu room service</a></p>
+      </div>
+      <div class="lang-en">
+        <p>Order food and drinks from the <strong>Munja</strong> restaurant straight to your room.</p>
+        <p><span class="tag">Room service: [FILL IN: e.g. 12:00 – 22:00]</span></p>
+        <p>To order: dial <strong>[FILL IN]</strong> or contact reception.</p>
+        <p>📖 <a href="[FILL IN: link to menu-munja.pdf]">See the room service menu</a></p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════ PRASOWALNIA I FITNESS (7) ═══════════ -->
+  <details class="sekcja">
+    <summary class="naglowek">
+      <span class="ikona" style="background:#edf6e0;">🏋️</span>
+      <span class="lang-pl">Prasowalnia i fitness</span><span class="lang-en">Ironing room &amp; fitness</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <!-- EDYTUJ TUTAJ: lokalizacje i godziny -->
+      <div class="lang-pl">
+        <h3>🧺 Prasowalnia</h3>
+        <p>Znajduje się na <strong>3 piętrze</strong>, na przeciwko <strong>pokoju 324</strong>. Dostępna całą dobę, bezpłatnie. Żelazko i deska na miejscu.</p>
+        <h3>💪 Fitness</h3>
+        <p>Sala fitness na <strong>3 piętrze</strong>, czynna <strong>6:00–22:00</strong>. Wstęp bezpłatny dla gości hotelu — wejście kartą pokojową. Prosimy o obuwie sportowe.</p>
+      </div>
+      <div class="lang-en">
+        <h3>🧺 Ironing room</h3>
+        <p>Located on the <strong>3rd floor</strong>, opposite <strong>room 324</strong>. Open 24/7, free of charge. Iron and board provided.</p>
+        <h3>💪 Fitness room</h3>
+        <p>Fitness room on the <strong>3rd floor</strong>, open <strong>6 AM–10 PM</strong>. Free for hotel guests — access with your room card. Sports shoes required.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ZDJĘCIE 2: wrzuć do folderu plik o nazwie  zdjecie-2.jpg
+       (np. widok na Warszawę / okolicę hotelu). -->
+  <img class="foto" src="zdjecie-2.jpg" alt="" onerror="this.style.display='none'">
+
+  <!-- ═══════════ OKOLICA ═══════════ -->
+  <details class="sekcja">
+    <summary class="naglowek">
+      <span class="ikona" style="background:#edf6e0;">📍</span>
+      <span class="lang-pl">Okolica, dworzec i lotnisko</span><span class="lang-en">Neighbourhood, station &amp; airport</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <!-- EDYTUJ TUTAJ: sprawdź i popraw odległości/czasy dla Waszej lokalizacji! -->
+      <h3><span class="lang-pl">🚆 Dojazd</span><span class="lang-en">🚆 Getting around</span></h3>
+      <table class="oplaty">
+        <tr><td><span class="lang-pl">Dworzec Warszawa Centralna</span><span class="lang-en">Warsaw Central Station</span></td><td>[UZUPEŁNIJ] km · ~[UZUPEŁNIJ] min</td></tr>
+        <tr><td><span class="lang-pl">Lotnisko Chopina (WAW)</span><span class="lang-en">Chopin Airport (WAW)</span></td><td>[UZUPEŁNIJ] km · ~[UZUPEŁNIJ] min</td></tr>
+        <tr><td><span class="lang-pl">Najbliższy przystanek: [UZUPEŁNIJ nazwa]</span><span class="lang-en">Nearest stop: [FILL IN name]</span></td><td>[UZUPEŁNIJ] m</td></tr>
+      </table>
+      <div class="lang-pl">
+        <p>Do lotniska najwygodniej: pociąg SKM/KM z Dworca Centralnego lub taxi/Uber/Bolt (ok. [UZUPEŁNIJ] zł).</p>
+        <h3>⭐ Warto zobaczyć w pobliżu</h3>
+        <ul>
+          <li><strong>Stare Miasto</strong> — [UZUPEŁNIJ] km</li>
+          <li><strong>Pałac Kultury i Nauki</strong> (taras widokowy) — [UZUPEŁNIJ] km</li>
+          <li><strong>Łazienki Królewskie</strong> — [UZUPEŁNIJ] km</li>
+          <li><strong>Bulwary Wiślane</strong> — [UZUPEŁNIJ] km</li>
+          <li><strong>Muzeum POLIN / Powstania Warszawskiego</strong> — [UZUPEŁNIJ] km</li>
+        </ul>
+        <p>Polecane miejsca na obiad/kolację w okolicy? Zapytaj nasz zespół recepcji — podpowiemy z przyjemnością!</p>
+      </div>
+      <div class="lang-en">
+        <p>Easiest way to the airport: SKM/KM train from the Central Station, or taxi/Uber/Bolt (approx. PLN [FILL IN]).</p>
+        <h3>⭐ Worth seeing nearby</h3>
+        <ul>
+          <li><strong>Old Town</strong> — [FILL IN] km</li>
+          <li><strong>Palace of Culture and Science</strong> (viewing terrace) — [FILL IN] km</li>
+          <li><strong>Royal Łazienki Park</strong> — [FILL IN] km</li>
+          <li><strong>Vistula Boulevards</strong> — [FILL IN] km</li>
+          <li><strong>POLIN Museum / Warsaw Rising Museum</strong> — [FILL IN] km</li>
+        </ul>
+        <p>Looking for a lunch or dinner spot? Ask our reception team — we're happy to recommend!</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════ REGULAMIN (9) ═══════════ -->
+  <details class="sekcja">
+    <summary class="naglowek">
+      <span class="ikona" style="background:#edf6e0;">📋</span>
+      <span class="lang-pl">Regulamin hotelu — najważniejsze zasady</span><span class="lang-en">Hotel rules — key points</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <!-- EDYTUJ TUTAJ: skrót regulaminu + link do pełnej wersji -->
+      <div class="lang-pl">
+        <ul>
+          <li><strong>Cisza nocna:</strong> 22:00 – 6:00.</li>
+          <li><strong>Zakaz palenia</strong> w całym obiekcie (pokoje, łazienki, korytarze) — dotyczy również e-papierosów. Palenie wyłącznie w wyznaczonej strefie na zewnątrz.</li>
+          <li>Goście niezameldowani mogą przebywać w pokoju w godz. 7:00 – 22:00.</li>
+          <li>Zwierzęta akceptujemy po wcześniejszym zgłoszeniu (opłata wg cennika).</li>
+          <li>Hotel nie odpowiada za wartościowe przedmioty pozostawione poza sejfem/depozytem w recepcji.</li>
+          <li>Gość ponosi odpowiedzialność materialną za uszkodzenia wyposażenia powstałe z jego winy.</li>
+        </ul>
+        <p>Pełny regulamin dostępny w recepcji oraz online: <a href="regulamin_hotelu.pdf" target="_blank">pełna treść regulaminu (PDF)</a>.</p>
+      </div>
+      <div class="lang-en">
+        <ul>
+          <li><strong>Quiet hours:</strong> 10:00 PM – 6:00 AM.</li>
+          <li><strong>Smoking is prohibited</strong> in the entire building (rooms, bathrooms, corridors) — including e-cigarettes. Smoking only in the designated outdoor area.</li>
+          <li>Unregistered visitors may stay in guest rooms between 7:00 AM – 10:00 PM.</li>
+          <li>Pets are welcome with prior notice (fee applies — see price list).</li>
+          <li>The hotel is not liable for valuables left outside the safe / reception deposit.</li>
+          <li>Guests are financially responsible for damage to hotel property caused by them.</li>
+        </ul>
+        <p>Full rules available at reception and online: <a href="hotel_regulations.pdf" target="_blank">full hotel rules (PDF)</a>.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════ OPŁATY I KARY (10) ═══════════ -->
+  <details class="sekcja">
+    <summary class="naglowek">
+      <span class="ikona" style="background:#fef9c3;">💳</span>
+      <span class="lang-pl">Opłaty dodatkowe i kary umowne</span><span class="lang-en">Extra charges &amp; penalty fees</span>
+      <span class="strzalka">›</span>
+    </summary>
+    <div class="tresc">
+      <!-- EDYTUJ TUTAJ: cennik — wpisz prawdziwe kwoty! -->
+      <h3><span class="lang-pl">Usługi dodatkowe</span><span class="lang-en">Extra services</span></h3>
+      <table class="oplaty">
+        <tr><td><span class="lang-pl">Późne wymeldowanie (do 15:00)</span><span class="lang-en">Late check-out (until 3 PM)</span></td><td>[150] zł</td></tr>
+        <tr><td><span class="lang-pl">Śniadanie (dokupione na miejscu)</span><span class="lang-en">Breakfast (purchased on site)</span></td><td>[100] zł</td></tr>
+        <tr><td><span class="lang-pl">Parking / doba</span><span class="lang-en">Parking / night</span></td><td>[110] zł</td></tr>
+        <tr><td><span class="lang-pl">Pobyt zwierzęcia / doba</span><span class="lang-en">Pet stay / night</span></td><td>[50] zł</td></tr>
+        <tr><td><span class="lang-pl">Dostawka / łóżeczko dziecięce</span><span class="lang-en">Extra bed / baby cot</span></td><td>[50] zł</td></tr>
+      </table>
+      <h3><span class="lang-pl">Kary umowne (za złamanie regulaminu)</span><span class="lang-en">Penalty fees (for breaking hotel rules)</span></h3>
+      <table class="oplaty">
+        <tr><td><span class="lang-pl">Palenie w pokoju (koszt ozonowania)</span><span class="lang-en">Smoking in the room (ozone treatment cost)</span></td><td>[1000] zł</td></tr>
+        <tr><td><span class="lang-pl">Zagubienie karty / klucza</span><span class="lang-en">Lost key card</span></td><td>[50] zł</td></tr>
+        <tr><td><span class="lang-pl">Zniszczenie wyposażenia</span><span class="lang-en">Damage to room equipment</span></td><td><span class="lang-pl">wg wyceny</span><span class="lang-en">per valuation</span></td></tr>
+        <tr><td><span class="lang-pl">Nieuzasadnione uruchomienie alarmu ppoż.</span><span class="lang-en">Unjustified fire alarm activation</span></td><td>[5000] zł</td></tr>
+      </table>
+      <div class="uwaga">
+        <span class="lang-pl">Kwoty kar wynikają z realnych kosztów przywrócenia pokoju do sprzedaży (np. wyłączenie pokoju na dobę po paleniu).</span>
+        <span class="lang-en">Penalty amounts reflect the real cost of returning the room to service (e.g. a room must be taken out of sale after smoking).</span>
+      </div>
+    </div>
+  </details>
+
+</main>
+
+<footer>
+  ibis Styles Warszawa City · <span class="lang-pl">Życzymy udanego pobytu!</span><span class="lang-en">Enjoy your stay!</span>
+</footer>
+
+<script>
+// ─── Język ───
+function ustawJezyk(j){
+  document.body.classList.toggle('en', j==='en');
+  document.getElementById('btn-pl').classList.toggle('active', j==='pl');
+  document.getElementById('btn-en').classList.toggle('active', j==='en');
+  try{ localStorage.setItem('jezyk', j); }catch(e){}
+}
+// zapamiętany wybór lub język telefonu gościa
+(function(){
+  var zapisany = null;
+  try{ zapisany = localStorage.getItem('jezyk'); }catch(e){}
+  if(zapisany){ ustawJezyk(zapisany); }
+  else if(!/^pl/i.test(navigator.language||'')){ ustawJezyk('en'); }
+})();
+
+// ─── Personalizacja z linku QR: ?pokoj=215&ewak=lewo ───
+(function(){
+  var p = new URLSearchParams(location.search);
+  var pokoj = p.get('pokoj');
+  var ewak  = (p.get('ewak')||'').toLowerCase();
+
+  if(pokoj){
+    var b = document.getElementById('pokoj-badge');
+    b.style.display = 'inline-block';
+    b.innerHTML = '<span class="lang-pl">Pokój ' + pokoj + '</span><span class="lang-en">Room ' + pokoj + '</span>';
+  }
+  // strzałka SVG obracana w kierunku ewakuacji (lewo / prawo / prosto)
+  var obroty = { lewo:-90, prawo:90, prosto:0 };
+  var opisPL = { lewo:'w lewo', prawo:'w prawo', prosto:'prosto' };
+  var opisEN = { lewo:'turn left', prawo:'turn right', prosto:'straight ahead' };
+  if(obroty.hasOwnProperty(ewak)){
+    document.getElementById('ewak-strzalka').style.display = 'none';
+    var svg = document.getElementById('ewak-svg');
+    svg.style.display = 'block';
+    svg.style.transform = 'rotate(' + obroty[ewak] + 'deg)';
+    document.getElementById('ewak-kierunek').innerHTML =
+      '<span class="lang-pl">' + opisPL[ewak] + '</span>' +
+      '<span class="lang-en">' + opisEN[ewak] + '</span>';
+  }
+})();
+</script>
+</body>
+</html>
