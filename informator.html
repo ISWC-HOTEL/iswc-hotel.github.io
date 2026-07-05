@@ -120,6 +120,21 @@
     color:#fff;display:flex;align-items:center;justify-content:center;
     font-size:.85rem;font-weight:700;
   }
+  /* ─── OPINIE I SOCIAL MEDIA ─── */
+  .social{
+    background:var(--karta);border-radius:16px;margin-bottom:12px;
+    box-shadow:0 2px 8px rgba(60,100,30,.08);padding:18px 16px;text-align:center;
+  }
+  .social h2{font-size:1.05rem;margin-bottom:2px;}
+  .social p{font-size:.9rem;color:var(--szary);margin-bottom:12px;}
+  .social .przyciski{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+  .social .przyciski a{
+    display:inline-block;text-decoration:none;font-weight:700;font-size:.92rem;
+    padding:10px 16px;border-radius:999px;color:#fff;
+  }
+  .social a.google{background:#f5a623;}
+  .social a.insta{background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);}
+  .social a.fb{background:#1877f2;}
   footer{
     text-align:center;font-size:.8rem;color:var(--szary);padding:20px 12px;
   }
@@ -476,6 +491,21 @@
       </div>
     </div>
   </details>
+
+  <!-- ═══════════ OPINIE I SOCIAL MEDIA ═══════════ -->
+  <!-- EDYTUJ TUTAJ: link „Oceń nas w Google" prowadzi teraz do wizytówki
+       hotelu w Mapach Google. Idealnie zamień go na BEZPOŚREDNI link do
+       wystawienia opinii: Profil Firmy w Google -> „Poproś o opinie"
+       -> skopiuj krótki link (g.page/r/...) i wklej poniżej w href. -->
+  <div class="social">
+    <h2><span class="lang-pl">Podobał Ci się pobyt? 💚</span><span class="lang-en">Enjoyed your stay? 💚</span></h2>
+    <p><span class="lang-pl">Twoja opinia znaczy dla nas bardzo dużo!</span><span class="lang-en">Your review means the world to us!</span></p>
+    <div class="przyciski">
+      <a class="google" href="https://www.google.com/maps/search/?api=1&amp;query=ibis%20Styles%20Warszawa%20City%20Grzybowska%2043%20Warszawa" target="_blank">⭐ <span class="lang-pl">Oceń nas w Google</span><span class="lang-en">Rate us on Google</span></a>
+      <a class="insta" href="https://www.instagram.com/ibisstyles_warszawacity/" target="_blank">📸 Instagram</a>
+      <a class="fb" href="https://www.facebook.com/ibisstyleswarszawacity" target="_blank">👍 Facebook</a>
+    </div>
+  </div>
 
 </main>
 
