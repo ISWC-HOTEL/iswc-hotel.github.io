@@ -5,3 +5,5 @@ lista-pokoi.txt
 OKOLICA-DANE.txt
 INSTRUKCJA.txt
 generator-qr.html
+# zdjęcia robocze (zawieszki, ulotki itp.)
+*.jpeg
