@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Kokpit — ibis Styles Warszawa City</title>
+<meta name="theme-color" content="#4d8a1f">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kokpit">
+<link rel="apple-touch-icon" href="ikona-apple.png">
+<link rel="icon" href="ikona-192.png">
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  KOKPIT SPRZEDAŻOWO-OPERACYJNY — ibis Styles Warszawa City
+  ═══════════════════════════════════════════════════════════════════
+  DO CZEGO TO JEST:
+  Jedno miejsce na zapytania od firm, zadania i notatki — żeby nic
+  nie ginęło w głowie ani na kartkach. Pilnuje follow-upów.
+
+  JAK ZAINSTALOWAĆ:
+  • iPhone: otwórz w Safari → Udostępnij → „Dodaj do ekranu początkowego"
+  • Windows: otwórz w Edge → ikona „Zainstaluj" po prawej w pasku adresu
+
+  GDZIE SĄ DANE:
+  Wyłącznie w pamięci przeglądarki na TYM urządzeniu (localStorage).
+  Nic nie wychodzi do internetu, nic nie trafia na GitHuba.
+  Telefon i komputer NA RAZIE nie synchronizują się między sobą —
+  do przenoszenia służy Eksport / Import w zakładce „Więcej".
+
+  UWAGA: wyczyszczenie danych przeglądarki = utrata wpisów.
+  Raz w tygodniu zrób Eksport (plik .json ląduje w Pobranych).
+  ═══════════════════════════════════════════════════════════════════
+-->
+<style>
+  :root{
+    /* kolorystyka spójna z informatorem hotelowym */
+    --ziel:#76b82a;
+    --ziel-ciemna:#4d8a1f;
+    --zolty:#ffc20e;
+    --czerw:#d9483b;
+    --nieb:#2f7bbf;
+    --tlo:#f4f7f0;
+    --karta:#ffffff;
+    --tekst:#252525;
+    --szary:#6b6b6b;
+    --szary-jasny:#9a9a9a;
+    --linia:#e6e9e1;
+    --cien:0 1px 3px rgba(50,80,20,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+    background:var(--tlo);color:var(--tekst);line-height:1.45;
+    font-size:16px;
+    padding-bottom:calc(66px + env(safe-area-inset-bottom));
+  }
+  button,input,select,textarea{font-family:inherit;font-size:16px;color:inherit;}
+
+  /* ─────────── NAGŁÓWEK ─────────── */
+  header{
+    background:linear-gradient(135deg,var(--ziel) 0%,var(--ziel-ciemna) 100%);
+    color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px;
+    position:sticky;top:0;z-index:20;
+  }
+  /* na szerokim ekranie nagłówek trzyma się tej samej osi, co treść */
+  header .rzad,header .podtytul{max-width:796px;margin-left:auto;margin-right:auto;}
+  header .rzad{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+  header h1{font-size:1.15rem;font-weight:700;letter-spacing:-.01em;}
+  header .data{font-size:.8rem;opacity:.9;white-space:nowrap;}
+  header .podtytul{font-size:.78rem;opacity:.85;margin-top:1px;}
+
+  main{max-width:820px;margin:0 auto;padding:14px 12px 20px;}
+  .widok{display:none;}
+  .widok.aktywny{display:block;animation:wejscie .18s ease-out;}
+  @keyframes wejscie{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  /* ─────────── KARTY I NAGŁÓWKI SEKCJI ─────────── */
+  .grupa{margin-bottom:20px;}
+  .grupa-tytul{
+    display:flex;align-items:center;gap:8px;
+    font-size:.76rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.06em;color:var(--szary);margin:0 4px 8px;
+  }
+  .grupa-tytul .licznik{
+    background:var(--linia);color:var(--szary);border-radius:999px;
+    padding:1px 8px;font-size:.72rem;letter-spacing:0;
+  }
+  .grupa-tytul.pilne{color:var(--czerw);}
+  .grupa-tytul.pilne .licznik{background:#fbe4e1;color:var(--czerw);}
+
+  .karta{
+    background:var(--karta);border-radius:14px;box-shadow:var(--cien);
+    padding:13px 14px;margin-bottom:9px;cursor:pointer;
+    border-left:4px solid transparent;position:relative;
+  }
+  .karta:active{transform:scale(.995);}
+  .karta.zaleg{border-left-color:var(--czerw);}
+  .karta.dzis{border-left-color:var(--zolty);}
+  .karta.zrobione{opacity:.5;}
+  .karta .gora{display:flex;align-items:flex-start;gap:9px;}
+  .karta .tytul{font-weight:600;flex:1;line-height:1.3;}
+  .karta.zrobione .tytul{text-decoration:line-through;}
+  .karta .firma{font-size:.86rem;color:var(--ziel-ciemna);font-weight:600;margin-top:1px;}
+  .karta .meta{
+    display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:7px;
+    font-size:.81rem;color:var(--szary);align-items:center;
+  }
+  .karta .meta b{color:var(--tekst);font-weight:600;}
+  .karta .notka{
+    font-size:.85rem;color:var(--szary);margin-top:6px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+
+  .typ-ikona{
+    flex:0 0 30px;height:30px;border-radius:9px;display:flex;
+    align-items:center;justify-content:center;font-size:.95rem;
+  }
+  .typ-zapytanie{background:#e9f4dd;}
+  .typ-zadanie{background:#e4eff9;}
+  .typ-notatka{background:#fdf3d9;}
+
+  .plakietka{
+    display:inline-block;border-radius:999px;padding:2px 9px;
+    font-size:.73rem;font-weight:700;white-space:nowrap;
+  }
+  .st-nowe{background:#e4eff9;color:#1e5b91;}
+  .st-oferta{background:#fdf3d9;color:#8a6300;}
+  .st-negocjacje{background:#f0e6f9;color:#6a3d99;}
+  .st-wygrane{background:#dff0d0;color:#3d7a00;}
+  .st-przegrane{background:#f2f2f2;color:#777;}
+  .st-do_zrobienia{background:#e4eff9;color:#1e5b91;}
+  .st-zrobione{background:#dff0d0;color:#3d7a00;}
+  .termin-zaleg{color:var(--czerw);font-weight:700;}
+  .termin-dzis{color:#8a6300;font-weight:700;}
+
+  /* ─────────── PUSTE STANY ─────────── */
+  .pusto{
+    text-align:center;padding:34px 20px;color:var(--szary-jasny);
+    font-size:.9rem;line-height:1.6;
+  }
+  .pusto .duza{font-size:2.2rem;display:block;margin-bottom:8px;opacity:.55;}
+
+  /* ─────────── PASEK STATYSTYK ─────────── */
+  .staty{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:20px;}
+  .stat{
+    background:var(--karta);border-radius:12px;padding:11px 8px;
+    text-align:center;box-shadow:var(--cien);
+  }
+  .stat .liczba{font-size:1.35rem;font-weight:700;line-height:1.15;}
+  .stat .opis{font-size:.7rem;color:var(--szary);text-transform:uppercase;letter-spacing:.03em;margin-top:2px;}
+  .stat.alarm .liczba{color:var(--czerw);}
+
+  /* ─────────── FILTRY ─────────── */
+  .filtry{
+    display:flex;gap:7px;overflow-x:auto;padding:2px 4px 10px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .filtry::-webkit-scrollbar{display:none;}
+  .filtry button{
+    background:var(--karta);border:1px solid var(--linia);border-radius:999px;
+    padding:6px 13px;font-size:.83rem;white-space:nowrap;cursor:pointer;
+    color:var(--szary);font-weight:600;
+  }
+  .filtry button.on{background:var(--ziel-ciemna);border-color:var(--ziel-ciemna);color:#fff;}
+  .szukajka{
+    width:100%;padding:10px 13px;border:1px solid var(--linia);
+    border-radius:11px;background:var(--karta);margin-bottom:10px;
+  }
+  .szukajka:focus{outline:2px solid var(--ziel);outline-offset:-1px;}
+
+  /* ─────────── PRZYCISK DODAJ ─────────── */
+  .dodaj{
+    position:fixed;right:16px;
+    bottom:calc(78px + env(safe-area-inset-bottom));
+    width:54px;height:54px;border-radius:50%;border:none;
+    background:var(--ziel-ciemna);color:#fff;font-size:1.7rem;line-height:1;
+    box-shadow:0 4px 14px rgba(60,110,10,.4);cursor:pointer;z-index:25;
+  }
+  .dodaj:active{transform:scale(.94);}
+
+  /* ─────────── DOLNA NAWIGACJA ─────────── */
+  nav{
+    position:fixed;bottom:0;left:0;right:0;background:var(--karta);
+    border-top:1px solid var(--linia);display:flex;justify-content:center;z-index:30;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  nav button{
+    flex:1 1 0;max-width:190px;background:none;border:none;padding:8px 2px 9px;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+    color:var(--szary-jasny);font-size:.68rem;font-weight:600;position:relative;
+  }
+  nav button .ico{font-size:1.2rem;line-height:1.1;}
+  nav button.on{color:var(--ziel-ciemna);}
+  nav button .kropka{
+    position:absolute;top:6px;right:calc(50% - 17px);
+    background:var(--czerw);color:#fff;border-radius:999px;
+    min-width:17px;padding:0 4px;font-size:.63rem;line-height:17px;
+  }
+
+  /* ─────────── OKNO (formularz / szczegóły) ─────────── */
+  .okno{
+    position:fixed;inset:0;background:rgba(25,35,15,.45);z-index:50;
+    display:none;align-items:flex-end;justify-content:center;
+  }
+  .okno.on{display:flex;}
+  .okno-tresc{
+    background:var(--tlo);width:100%;max-width:640px;
+    max-height:94vh;overflow-y:auto;border-radius:20px 20px 0 0;
+    padding:18px 16px calc(26px + env(safe-area-inset-bottom));
+    animation:wjazd .2s ease-out;
+  }
+  @keyframes wjazd{from{transform:translateY(22px);}to{transform:none;}}
+  @media(min-width:700px){
+    .okno{align-items:center;}
+    .okno-tresc{border-radius:18px;max-height:88vh;}
+  }
+  .okno-gora{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .okno-gora h2{font-size:1.08rem;font-weight:700;}
+  .zamknij{
+    background:var(--linia);border:none;border-radius:50%;
+    width:31px;height:31px;font-size:1.05rem;cursor:pointer;color:var(--szary);
+    line-height:1;
+  }
+
+  label.pole{display:block;margin-bottom:12px;}
+  label.pole .nazwa{
+    display:block;font-size:.76rem;font-weight:700;color:var(--szary);
+    text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;
+  }
+  .pole input,.pole select,.pole textarea{
+    width:100%;padding:11px 12px;border:1px solid var(--linia);
+    border-radius:11px;background:var(--karta);
+  }
+  .pole input:focus,.pole select:focus,.pole textarea:focus{
+    outline:2px solid var(--ziel);outline-offset:-1px;
+  }
+  .pole textarea{min-height:78px;resize:vertical;line-height:1.45;}
+  .para{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+  .wybor-typu{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:15px;}
+  .wybor-typu button{
+    background:var(--karta);border:2px solid var(--linia);border-radius:13px;
+    padding:11px 4px;cursor:pointer;display:flex;flex-direction:column;
+    align-items:center;gap:3px;font-size:.79rem;font-weight:600;color:var(--szary);
+  }
+  .wybor-typu button .ico{font-size:1.3rem;}
+  .wybor-typu button.on{border-color:var(--ziel);background:#f3f9ec;color:var(--ziel-ciemna);}
+
+  .przyciski{display:flex;gap:9px;margin-top:6px;}
+  .btn{
+    flex:1;padding:13px;border:none;border-radius:12px;font-weight:700;
+    cursor:pointer;font-size:.95rem;
+  }
+  .btn-glowny{background:var(--ziel-ciemna);color:#fff;}
+  .btn-glowny:active{background:#3f7318;}
+  .btn-drugi{background:var(--karta);color:var(--szary);border:1px solid var(--linia);}
+  .btn-usun{background:#fbe4e1;color:var(--czerw);}
+  .btn:disabled{opacity:.45;cursor:default;}
+
+  .szybkie{display:flex;flex-wrap:wrap;gap:7px;margin-top:5px;}
+  .szybkie button{
+    background:var(--karta);border:1px solid var(--linia);border-radius:999px;
+    padding:6px 12px;font-size:.82rem;cursor:pointer;color:var(--ziel-ciemna);font-weight:600;
+  }
+  .szybkie button:active{background:#f3f9ec;}
+
+  /* ─────────── SZCZEGÓŁY SPRAWY ─────────── */
+  .szcz-blok{
+    background:var(--karta);border-radius:13px;padding:13px 14px;
+    margin-bottom:11px;box-shadow:var(--cien);
+  }
+  .szcz-blok h3{
+    font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--szary);margin-bottom:7px;font-weight:700;
+  }
+  .szcz-rzad{
+    display:flex;justify-content:space-between;gap:12px;padding:5px 0;
+    border-bottom:1px solid var(--linia);font-size:.9rem;
+  }
+  .szcz-rzad:last-child{border-bottom:none;}
+  .szcz-rzad .k{color:var(--szary);}
+  .szcz-rzad .w{font-weight:600;text-align:right;}
+  .kroki{display:flex;flex-wrap:wrap;gap:7px;}
+  .kroki button{
+    border:1px solid var(--linia);background:var(--tlo);border-radius:10px;
+    padding:9px 12px;font-size:.85rem;font-weight:600;cursor:pointer;
+  }
+  .kroki button.wyroznij{background:var(--ziel-ciemna);color:#fff;border-color:var(--ziel-ciemna);}
+  .historia{list-style:none;font-size:.87rem;}
+  .historia li{padding:7px 0;border-bottom:1px solid var(--linia);}
+  .historia li:last-child{border-bottom:none;}
+  .historia .kiedy{font-size:.75rem;color:var(--szary-jasny);display:block;}
+
+  /* ─────────── WIĘCEJ ─────────── */
+  .info-blok{
+    background:var(--karta);border-radius:13px;padding:14px;
+    margin-bottom:11px;box-shadow:var(--cien);font-size:.89rem;
+  }
+  .info-blok h3{font-size:.97rem;margin-bottom:7px;}
+  .info-blok p{color:var(--szary);margin-bottom:9px;line-height:1.5;}
+  .info-blok .btn{width:100%;flex:none;margin-bottom:8px;}
+  .ostrzezenie{
+    background:#fff6e0;border-left:4px solid var(--zolty);
+    border-radius:9px;padding:11px 13px;font-size:.86rem;margin-bottom:11px;
+  }
+
+  .toast{
+    position:fixed;left:50%;transform:translateX(-50%);
+    bottom:calc(84px + env(safe-area-inset-bottom));
+    background:#2b3b1a;color:#fff;padding:11px 19px;border-radius:11px;
+    font-size:.88rem;font-weight:600;z-index:60;opacity:0;pointer-events:none;
+    transition:opacity .22s;max-width:88vw;text-align:center;
+  }
+  .toast.on{opacity:.96;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="rzad">
+    <h1>Kokpit</h1>
+    <div class="data" id="dzis-data"></div>
+  </div>
+  <div class="podtytul">ibis Styles Warszawa City</div>
+</header>
+
+<main>
+
+  <!-- ═══════════ ODPRAWA ═══════════ -->
+  <section class="widok aktywny" id="w-odprawa">
+    <div class="staty">
+      <div class="stat" id="stat-pipeline">
+        <div class="liczba">–</div><div class="opis">w toku</div>
+      </div>
+      <div class="stat" id="stat-wartosc">
+        <div class="liczba">–</div><div class="opis">wartość</div>
+      </div>
+      <div class="stat alarm" id="stat-zalegle">
+        <div class="liczba">–</div><div class="opis">zaległe</div>
+      </div>
+    </div>
+    <div id="odprawa-tresc"></div>
+  </section>
+
+  <!-- ═══════════ SPRAWY ═══════════ -->
+  <section class="widok" id="w-sprawy">
+    <input class="szukajka" id="szukaj" type="search" placeholder="Szukaj — firma, temat, notatka…">
+    <div class="filtry" id="filtry">
+      <button data-f="aktywne" class="on">Aktywne</button>
+      <button data-f="zapytania">Zapytania</button>
+      <button data-f="zadania">Zadania</button>
+      <button data-f="notatki">Notatki</button>
+      <button data-f="wygrane">Wygrane</button>
+      <button data-f="przegrane">Przegrane</button>
+      <button data-f="wszystko">Wszystko</button>
+    </div>
+    <div id="lista-spraw"></div>
+  </section>
+
+  <!-- ═══════════ WIĘCEJ ═══════════ -->
+  <section class="widok" id="w-wiecej">
+    <div class="ostrzezenie">
+      <strong>Dane są tylko na tym urządzeniu.</strong> Nie wychodzą do internetu
+      i nie trafiają na GitHuba. Wyczyszczenie danych przeglądarki = utrata wpisów.
+      Rób eksport raz w tygodniu.
+    </div>
+
+    <div class="info-blok">
+      <h3>Kopia zapasowa</h3>
+      <p>Eksport zapisze wszystkie sprawy do pliku <code>.json</code> w Pobranych.
+         Tym samym plikiem przeniesiesz dane z telefonu na komputer i odwrotnie.</p>
+      <button class="btn btn-glowny" id="btn-eksport">Eksportuj do pliku</button>
+      <button class="btn btn-drugi" id="btn-import">Wczytaj z pliku</button>
+      <input type="file" id="plik-import" accept=".json,application/json" hidden>
+    </div>
+
+    <div class="info-blok">
+      <h3>Instalacja jako aplikacja</h3>
+      <p><strong>iPhone:</strong> Safari → Udostępnij → „Dodaj do ekranu początkowego".<br>
+         <strong>Windows:</strong> Edge → ikona „Zainstaluj" w pasku adresu.</p>
+      <p>Po instalacji działa też bez internetu.</p>
+    </div>
+
+    <div class="info-blok">
+      <h3>Statystyki</h3>
+      <div id="staty-pelne"></div>
+    </div>
+
+    <div class="info-blok">
+      <h3>Wyczyść wszystko</h3>
+      <p>Usuwa bezpowrotnie wszystkie sprawy z tego urządzenia.
+         Najpierw zrób eksport.</p>
+      <button class="btn btn-usun" id="btn-wyczysc">Usuń wszystkie dane</button>
+    </div>
+  </section>
+
+</main>
+
+<button class="dodaj" id="btn-dodaj" aria-label="Nowy wpis">+</button>
+
+<nav>
+  <button data-w="odprawa" class="on"><span class="ico">☀️</span>Odprawa<span class="kropka" id="kropka-nav" style="display:none"></span></button>
+  <button data-w="sprawy"><span class="ico">📋</span>Sprawy</button>
+  <button data-w="wiecej"><span class="ico">⚙️</span>Więcej</button>
+</nav>
+
+<!-- ═══════════ OKNO: NOWY / EDYCJA ═══════════ -->
+<div class="okno" id="okno-form">
+  <div class="okno-tresc">
+    <div class="okno-gora">
+      <h2 id="form-tytul">Nowy wpis</h2>
+      <button class="zamknij" data-zamknij="okno-form">✕</button>
+    </div>
+
+    <div class="wybor-typu" id="wybor-typu">
+      <button data-t="zapytanie" class="on"><span class="ico">💼</span>Zapytanie</button>
+      <button data-t="zadanie"><span class="ico">✓</span>Zadanie</button>
+      <button data-t="notatka"><span class="ico">📝</span>Notatka</button>
+    </div>
+
+    <label class="pole">
+      <span class="nazwa" id="et-tytul">Czego dotyczy</span>
+      <input id="f-tytul" type="text" placeholder="np. konferencja, 12 pokoi">
+    </label>
+
+    <div id="pola-zapytania">
+      <label class="pole">
+        <span class="nazwa">Firma / klient</span>
+        <input id="f-firma" type="text" placeholder="np. Deloitte">
+      </label>
+      <div class="para">
+        <label class="pole">
+          <span class="nazwa">Termin pobytu</span>
+          <input id="f-termin" type="date">
+        </label>
+        <label class="pole">
+          <span class="nazwa">Pokoje</span>
+          <input id="f-pokoje" type="number" inputmode="numeric" min="0" placeholder="12">
+        </label>
+      </div>
+      <label class="pole">
+        <span class="nazwa">Szacowana wartość (zł)</span>
+        <input id="f-wartosc" type="number" inputmode="numeric" min="0" placeholder="8400">
+      </label>
+      <label class="pole">
+        <span class="nazwa">Kontakt</span>
+        <input id="f-kontakt" type="text" placeholder="imię, telefon albo mail">
+      </label>
+    </div>
+
+    <label class="pole">
+      <span class="nazwa" id="et-nastepny">Przypomnij o kontakcie</span>
+      <input id="f-nastepny" type="date">
+      <div class="szybkie" id="szybkie-daty">
+        <button data-dni="0">dziś</button>
+        <button data-dni="1">jutro</button>
+        <button data-dni="3">za 3 dni</button>
+        <button data-dni="7">za tydzień</button>
+        <button data-dni="-1">bez przypomnienia</button>
+      </div>
+    </label>
+
+    <label class="pole">
+      <span class="nazwa">Notatka</span>
+      <textarea id="f-notatka" placeholder="Co ustalone, na czym stoi, czego chce klient…"></textarea>
+    </label>
+
+    <div class="przyciski">
+      <button class="btn btn-drugi" data-zamknij="okno-form">Anuluj</button>
+      <button class="btn btn-glowny" id="btn-zapisz">Zapisz</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ OKNO: SZCZEGÓŁY ═══════════ -->
+<div class="okno" id="okno-szcz">
+  <div class="okno-tresc">
+    <div class="okno-gora">
+      <h2 id="szcz-tytul">Sprawa</h2>
+      <button class="zamknij" data-zamknij="okno-szcz">✕</button>
+    </div>
+    <div id="szcz-tresc"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════════════════════════
+   DANE — wszystko trzymane w localStorage tej przeglądarki
+   ═══════════════════════════════════════════════════════════════ */
+const KLUCZ = 'kokpit_iswc_v1';
+let sprawy = [];
+let filtr = 'aktywne';
+let szukanie = '';
+let edytowane = null;   // id sprawy w trakcie edycji (null = nowa)
+let typWpisu = 'zapytanie';
+let otwarteSzczegoly = null;
+
+function wczytaj(){
+  try{
+    const s = localStorage.getItem(KLUCZ);
+    sprawy = s ? JSON.parse(s) : [];
+    if(!Array.isArray(sprawy)) sprawy = [];
+  }catch(e){
+    sprawy = [];
+    powiadom('Nie udało się odczytać zapisanych danych');
+  }
+}
+function zapisz(){
+  try{
+    localStorage.setItem(KLUCZ, JSON.stringify(sprawy));
+  }catch(e){
+    powiadom('Brak miejsca — zrób eksport i wyczyść stare sprawy');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DATY — wszystko na lokalnej strefie, format RRRR-MM-DD
+   ═══════════════════════════════════════════════════════════════ */
+function dzisISO(){
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0,10);
+}
+function zaDni(n){
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0,10);
+}
+function roznicaDni(iso){
+  if(!iso) return null;
+  const a = new Date(dzisISO() + 'T00:00:00');
+  const b = new Date(iso + 'T00:00:00');
+  return Math.round((b - a) / 86400000);
+}
+const MIESIACE = ['stycznia','lutego','marca','kwietnia','maja','czerwca',
+                  'lipca','sierpnia','września','października','listopada','grudnia'];
+function ladnaData(iso){
+  if(!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return d.getDate() + ' ' + MIESIACE[d.getMonth()];
+}
+function opisTerminu(iso){
+  const r = roznicaDni(iso);
+  if(r === null) return '';
+  if(r < -1) return 'zaległe ' + Math.abs(r) + ' dni';
+  if(r === -1) return 'zaległe od wczoraj';
+  if(r === 0) return 'dziś';
+  if(r === 1) return 'jutro';
+  if(r <= 7) return 'za ' + r + ' dni';
+  return ladnaData(iso);
+}
+function zl(n){
+  if(!n) return '';
+  return Number(n).toLocaleString('pl-PL') + ' zł';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   POMOCNICZE
+   ═══════════════════════════════════════════════════════════════ */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+function esc(t){
+  return String(t == null ? '' : t)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+let toastTimer;
+function powiadom(tekst){
+  const t = $('#toast');
+  t.textContent = tekst;
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 2400);
+}
+function nowyId(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+}
+
+const NAZWY_STATUSOW = {
+  nowe:'Nowe', oferta:'Oferta wysłana', negocjacje:'Negocjacje',
+  wygrane:'Wygrane', przegrane:'Przegrane',
+  do_zrobienia:'Do zrobienia', zrobione:'Zrobione'
+};
+const IKONY = { zapytanie:'💼', zadanie:'✓', notatka:'📝' };
+
+function czyAktywna(s){
+  return !['wygrane','przegrane','zrobione'].includes(s.status);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER — KARTA SPRAWY
+   ═══════════════════════════════════════════════════════════════ */
+function kartaHTML(s){
+  const r = czyAktywna(s) ? roznicaDni(s.nastepny) : null;
+  let klasa = 'karta';
+  if(!czyAktywna(s)) klasa += ' zrobione';
+  else if(r !== null && r < 0) klasa += ' zaleg';
+  else if(r === 0) klasa += ' dzis';
+
+  let terminHTML = '';
+  if(s.nastepny && czyAktywna(s)){
+    const kl = r < 0 ? 'termin-zaleg' : (r === 0 ? 'termin-dzis' : '');
+    terminHTML = '<span class="' + kl + '">🔔 ' + esc(opisTerminu(s.nastepny)) + '</span>';
+  }
+
+  const meta = [];
+  if(terminHTML) meta.push(terminHTML);
+  if(s.typ === 'zapytanie'){
+    if(s.termin) meta.push('📅 <b>' + esc(ladnaData(s.termin)) + '</b>');
+    if(s.pokoje) meta.push('🛏 <b>' + esc(s.pokoje) + '</b>');
+    if(s.wartosc) meta.push('<b>' + esc(zl(s.wartosc)) + '</b>');
+  }
+
+  return '<div class="' + klasa + '" data-id="' + esc(s.id) + '">' +
+    '<div class="gora">' +
+      '<div class="typ-ikona typ-' + esc(s.typ) + '">' + IKONY[s.typ] + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="tytul">' + esc(s.tytul) + '</div>' +
+        (s.firma ? '<div class="firma">' + esc(s.firma) + '</div>' : '') +
+      '</div>' +
+      (s.typ !== 'notatka'
+        ? '<span class="plakietka st-' + esc(s.status) + '">' + esc(NAZWY_STATUSOW[s.status] || s.status) + '</span>'
+        : '') +
+    '</div>' +
+    (meta.length ? '<div class="meta">' + meta.join('') + '</div>' : '') +
+    (s.notatka ? '<div class="notka">' + esc(s.notatka) + '</div>' : '') +
+  '</div>';
+}
+
+function grupaHTML(tytul, lista, pilne){
+  if(!lista.length) return '';
+  return '<div class="grupa">' +
+    '<div class="grupa-tytul' + (pilne ? ' pilne' : '') + '">' + esc(tytul) +
+      '<span class="licznik">' + lista.length + '</span></div>' +
+    lista.map(kartaHTML).join('') +
+  '</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WIDOK: ODPRAWA
+   ═══════════════════════════════════════════════════════════════ */
+function rysujOdprawe(){
+  const akt = sprawy.filter(czyAktywna);
+
+  // sprawa trafia dokładnie do jednej grupy — inaczej ta sama karta dubluje się na ekranie
+  const uzyte = new Set();
+  const wez = (warunek, sortuj) => {
+    const l = akt.filter(s => !uzyte.has(s.id) && warunek(s));
+    l.forEach(s => uzyte.add(s.id));
+    return sortuj ? l.sort((a,b) => a.nastepny.localeCompare(b.nastepny)) : l;
+  };
+
+  const zalegle = wez(s => s.nastepny && roznicaDni(s.nastepny) < 0, true);
+  const naDzis  = wez(s => s.nastepny && roznicaDni(s.nastepny) === 0, false);
+  // zapytania, na które nie poszła jeszcze oferta — cichy wyciek pieniędzy
+  const bezOferty = wez(s => s.typ === 'zapytanie' && s.status === 'nowe', false);
+  const wkrotce = wez(s => {
+                      const r = roznicaDni(s.nastepny);
+                      return r !== null && r > 0 && r <= 7;
+                    }, true);
+
+  const wToku = akt.filter(s => s.typ === 'zapytanie').length;
+  const wartosc = sprawy
+    .filter(s => s.typ === 'zapytanie' && czyAktywna(s))
+    .reduce((a,s) => a + (Number(s.wartosc) || 0), 0);
+
+  $('#stat-pipeline .liczba').textContent = wToku;
+  $('#stat-wartosc .liczba').textContent =
+    wartosc ? Math.round(wartosc/1000) + 'k' : '0';
+  $('#stat-zalegle .liczba').textContent = zalegle.length;
+
+  const kropka = $('#kropka-nav');
+  const pilnych = zalegle.length + naDzis.length;
+  kropka.style.display = pilnych ? 'block' : 'none';
+  kropka.textContent = pilnych;
+
+  let html = '';
+  html += grupaHTML('Zaległe — odezwij się dziś', zalegle, true);
+  html += grupaHTML('Na dziś', naDzis, false);
+  html += grupaHTML('Zapytania bez wysłanej oferty', bezOferty, false);
+  html += grupaHTML('W ciągu tygodnia', wkrotce, false);
+
+  if(!html){
+    html = akt.length
+      ? '<div class="pusto"><span class="duza">🌤️</span>' +
+        'Nic nie pali się na dziś.<br>W toku: ' + akt.length +
+        ' ' + (akt.length === 1 ? 'sprawa' : 'spraw') + ' bez terminu przypomnienia.</div>'
+      : '<div class="pusto"><span class="duza">📥</span>' +
+        'Pusto. Dodaj pierwsze zapytanie<br>przyciskiem <strong>+</strong> na dole.</div>';
+  }
+  $('#odprawa-tresc').innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WIDOK: SPRAWY
+   ═══════════════════════════════════════════════════════════════ */
+function rysujSprawy(){
+  let l = sprawy.slice();
+
+  if(filtr === 'aktywne')         l = l.filter(czyAktywna);
+  else if(filtr === 'zapytania')  l = l.filter(s => s.typ === 'zapytanie');
+  else if(filtr === 'zadania')    l = l.filter(s => s.typ === 'zadanie');
+  else if(filtr === 'notatki')    l = l.filter(s => s.typ === 'notatka');
+  else if(filtr === 'wygrane')    l = l.filter(s => s.status === 'wygrane');
+  else if(filtr === 'przegrane')  l = l.filter(s => s.status === 'przegrane');
+
+  if(szukanie){
+    const q = szukanie.toLowerCase();
+    l = l.filter(s => (
+      (s.tytul || '') + ' ' + (s.firma || '') + ' ' +
+      (s.notatka || '') + ' ' + (s.kontakt || '')
+    ).toLowerCase().includes(q));
+  }
+
+  // najpierw najpilniejsze terminy, potem sprawy bez terminu wg daty dodania
+  l.sort((a,b) => {
+    const aa = czyAktywna(a) ? 0 : 1, bb = czyAktywna(b) ? 0 : 1;
+    if(aa !== bb) return aa - bb;
+    if(a.nastepny && b.nastepny) return a.nastepny.localeCompare(b.nastepny);
+    if(a.nastepny) return -1;
+    if(b.nastepny) return 1;
+    return (b.utworzono || '').localeCompare(a.utworzono || '');
+  });
+
+  $('#lista-spraw').innerHTML = l.length
+    ? l.map(kartaHTML).join('')
+    : '<div class="pusto"><span class="duza">🔍</span>Nic nie pasuje do tego filtra.</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WIDOK: WIĘCEJ — statystyki
+   ═══════════════════════════════════════════════════════════════ */
+function rysujStaty(){
+  const zap = sprawy.filter(s => s.typ === 'zapytanie');
+  const wyg = zap.filter(s => s.status === 'wygrane');
+  const prz = zap.filter(s => s.status === 'przegrane');
+  const rozstrzygniete = wyg.length + prz.length;
+  const skutecznosc = rozstrzygniete
+    ? Math.round(wyg.length / rozstrzygniete * 100) + '%'
+    : '—';
+  const wartoscWyg = wyg.reduce((a,s) => a + (Number(s.wartosc) || 0), 0);
+
+  const powody = {};
+  prz.forEach(s => {
+    const p = s.powod || 'nie podano';
+    powody[p] = (powody[p] || 0) + 1;
+  });
+  const listaPowodow = Object.entries(powody)
+    .sort((a,b) => b[1] - a[1])
+    .map(([p,n]) => '<div class="szcz-rzad"><span class="k">' + esc(p) +
+                    '</span><span class="w">' + n + '</span></div>').join('');
+
+  $('#staty-pelne').innerHTML =
+    '<div class="szcz-rzad"><span class="k">Wszystkich wpisów</span><span class="w">' + sprawy.length + '</span></div>' +
+    '<div class="szcz-rzad"><span class="k">Zapytań łącznie</span><span class="w">' + zap.length + '</span></div>' +
+    '<div class="szcz-rzad"><span class="k">Wygranych</span><span class="w">' + wyg.length + '</span></div>' +
+    '<div class="szcz-rzad"><span class="k">Przegranych</span><span class="w">' + prz.length + '</span></div>' +
+    '<div class="szcz-rzad"><span class="k">Skuteczność</span><span class="w">' + skutecznosc + '</span></div>' +
+    '<div class="szcz-rzad"><span class="k">Wartość wygranych</span><span class="w">' + (zl(wartoscWyg) || '0 zł') + '</span></div>' +
+    (listaPowodow
+      ? '<h3 style="margin-top:13px">Dlaczego przegrane</h3>' + listaPowodow
+      : '');
+}
+
+function odswiez(){
+  rysujOdprawe();
+  rysujSprawy();
+  rysujStaty();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAWIGACJA
+   ═══════════════════════════════════════════════════════════════ */
+$$('nav button').forEach(b => {
+  b.addEventListener('click', () => {
+    $$('nav button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    $$('.widok').forEach(w => w.classList.remove('aktywny'));
+    $('#w-' + b.dataset.w).classList.add('aktywny');
+    window.scrollTo(0,0);
+  });
+});
+
+$$('#filtry button').forEach(b => {
+  b.addEventListener('click', () => {
+    $$('#filtry button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    filtr = b.dataset.f;
+    rysujSprawy();
+  });
+});
+
+$('#szukaj').addEventListener('input', e => {
+  szukanie = e.target.value.trim();
+  rysujSprawy();
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   OKNA
+   ═══════════════════════════════════════════════════════════════ */
+function otworz(id){ $('#' + id).classList.add('on'); }
+function zamknij(id){ $('#' + id).classList.remove('on'); }
+
+$$('[data-zamknij]').forEach(b => {
+  b.addEventListener('click', () => zamknij(b.dataset.zamknij));
+});
+$$('.okno').forEach(o => {
+  o.addEventListener('click', e => { if(e.target === o) o.classList.remove('on'); });
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') $$('.okno').forEach(o => o.classList.remove('on'));
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   FORMULARZ
+   ═══════════════════════════════════════════════════════════════ */
+function ustawTyp(t){
+  typWpisu = t;
+  $$('#wybor-typu button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  $('#pola-zapytania').style.display = (t === 'zapytanie') ? 'block' : 'none';
+  $('#et-tytul').textContent = t === 'zapytanie' ? 'Czego dotyczy'
+                             : t === 'zadanie'   ? 'Co do zrobienia'
+                             : 'Temat notatki';
+  $('#f-tytul').placeholder = t === 'zapytanie' ? 'np. konferencja, 12 pokoi'
+                            : t === 'zadanie'   ? 'np. wysłać umowę do Orange'
+                            : 'np. ustalenia ze spotkania';
+  $('#et-nastepny').textContent = t === 'zapytanie' ? 'Przypomnij o kontakcie'
+                                : t === 'zadanie'   ? 'Termin'
+                                : 'Przypomnij';
+}
+$$('#wybor-typu button').forEach(b => {
+  b.addEventListener('click', () => ustawTyp(b.dataset.t));
+});
+
+$$('#szybkie-daty button').forEach(b => {
+  b.addEventListener('click', () => {
+    const d = Number(b.dataset.dni);
+    $('#f-nastepny').value = d < 0 ? '' : zaDni(d);
+  });
+});
+
+function czyscForm(){
+  ['f-tytul','f-firma','f-termin','f-pokoje','f-wartosc','f-kontakt','f-nastepny','f-notatka']
+    .forEach(id => { $('#' + id).value = ''; });
+}
+
+function otworzNowy(){
+  edytowane = null;
+  czyscForm();
+  ustawTyp('zapytanie');
+  $('#form-tytul').textContent = 'Nowy wpis';
+  $('#f-nastepny').value = zaDni(1);   // domyślnie przypomnij jutro
+  $('#wybor-typu').style.display = 'grid';
+  otworz('okno-form');
+  setTimeout(() => $('#f-tytul').focus(), 120);
+}
+
+function otworzEdycje(s){
+  edytowane = s.id;
+  ustawTyp(s.typ);
+  $('#form-tytul').textContent = 'Edycja';
+  $('#wybor-typu').style.display = 'none';   // typu nie zmieniamy po zapisaniu
+  $('#f-tytul').value    = s.tytul || '';
+  $('#f-firma').value    = s.firma || '';
+  $('#f-termin').value   = s.termin || '';
+  $('#f-pokoje').value   = s.pokoje || '';
+  $('#f-wartosc').value  = s.wartosc || '';
+  $('#f-kontakt').value  = s.kontakt || '';
+  $('#f-nastepny').value = s.nastepny || '';
+  $('#f-notatka').value  = s.notatka || '';
+  zamknij('okno-szcz');
+  otworz('okno-form');
+}
+
+$('#btn-dodaj').addEventListener('click', otworzNowy);
+
+$('#btn-zapisz').addEventListener('click', () => {
+  const tytul = $('#f-tytul').value.trim();
+  if(!tytul){
+    powiadom('Wpisz, czego sprawa dotyczy');
+    $('#f-tytul').focus();
+    return;
+  }
+
+  const dane = {
+    tytul:    tytul,
+    firma:    $('#f-firma').value.trim(),
+    termin:   $('#f-termin').value,
+    pokoje:   $('#f-pokoje').value,
+    wartosc:  $('#f-wartosc').value,
+    kontakt:  $('#f-kontakt').value.trim(),
+    nastepny: $('#f-nastepny').value,
+    notatka:  $('#f-notatka').value.trim()
+  };
+
+  if(edytowane){
+    const s = sprawy.find(x => x.id === edytowane);
+    Object.assign(s, dane);
+    s.zmieniono = new Date().toISOString();
+    dopiszHistorie(s, 'Zmieniono dane');
+    powiadom('Zapisane');
+  }else{
+    // notatka nie ma cyklu życia, zadanie i zapytanie mają
+    const start = typWpisu === 'zapytanie' ? 'nowe'
+                : typWpisu === 'zadanie'   ? 'do_zrobienia'
+                : 'notatka';
+    const s = Object.assign({
+      id: nowyId(),
+      typ: typWpisu,
+      status: start,
+      historia: [],
+      utworzono: new Date().toISOString()
+    }, dane);
+    if(typWpisu !== 'zapytanie'){
+      s.firma = ''; s.termin = ''; s.pokoje = ''; s.wartosc = ''; s.kontakt = '';
+    }
+    dopiszHistorie(s, 'Dodane');
+    sprawy.push(s);
+    powiadom(typWpisu === 'zapytanie' ? 'Zapytanie dodane' : 'Dodane');
+  }
+
+  zapisz();
+  odswiez();
+  zamknij('okno-form');
+});
+
+function dopiszHistorie(s, tekst){
+  if(!s.historia) s.historia = [];
+  s.historia.unshift({ kiedy: new Date().toISOString(), tekst: tekst });
+  if(s.historia.length > 40) s.historia.length = 40;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SZCZEGÓŁY SPRAWY
+   ═══════════════════════════════════════════════════════════════ */
+document.addEventListener('click', e => {
+  const k = e.target.closest('.karta');
+  if(k) pokazSzczegoly(k.dataset.id);
+});
+
+function pokazSzczegoly(id){
+  const s = sprawy.find(x => x.id === id);
+  if(!s) return;
+  otwarteSzczegoly = id;
+
+  $('#szcz-tytul').textContent = s.tytul;
+
+  // ── następne kroki, zależne od tego, gdzie sprawa stoi ──
+  let kroki = [];
+  if(s.typ === 'zapytanie'){
+    if(s.status === 'nowe')
+      kroki.push(['oferta','Oferta wysłana',true]);
+    if(s.status === 'oferta')
+      kroki.push(['negocjacje','Klient odpisał — negocjujemy',true]);
+    if(['nowe','oferta','negocjacje'].includes(s.status)){
+      kroki.push(['wygrane','Wygrane 🎉',false]);
+      kroki.push(['przegrane','Przegrane',false]);
+    }
+    if(['wygrane','przegrane'].includes(s.status))
+      kroki.push(['nowe','Otwórz ponownie',false]);
+  }else if(s.typ === 'zadanie'){
+    kroki.push(s.status === 'zrobione'
+      ? ['do_zrobienia','Cofnij — jednak niezrobione',false]
+      : ['zrobione','Zrobione ✓',true]);
+  }
+
+  const przypomnienia = czyAktywna(s) ? [
+    '<h3>Przypomnij ponownie</h3><div class="kroki">' +
+    [1,3,7,14].map(d =>
+      '<button data-przyp="' + d + '">za ' + d + (d === 1 ? ' dzień' : ' dni') + '</button>'
+    ).join('') +
+    '<button data-przyp="0">dziś</button>' +
+    (s.nastepny ? '<button data-przyp="brak">bez przypomnienia</button>' : '') +
+    '</div>'
+  ].join('') : '';
+
+  const info = [];
+  if(s.firma)    info.push(['Firma', s.firma]);
+  if(s.termin)   info.push(['Termin pobytu', ladnaData(s.termin)]);
+  if(s.pokoje)   info.push(['Pokoje', s.pokoje]);
+  if(s.wartosc)  info.push(['Wartość', zl(s.wartosc)]);
+  if(s.kontakt)  info.push(['Kontakt', s.kontakt]);
+  if(s.nastepny && czyAktywna(s)) info.push(['Przypomnienie', opisTerminu(s.nastepny)]);
+  if(s.powod)    info.push(['Powód przegranej', s.powod]);
+
+  $('#szcz-tresc').innerHTML =
+    '<div class="szcz-blok" style="display:flex;align-items:center;gap:10px">' +
+      '<div class="typ-ikona typ-' + esc(s.typ) + '">' + IKONY[s.typ] + '</div>' +
+      (s.typ !== 'notatka'
+        ? '<span class="plakietka st-' + esc(s.status) + '">' + esc(NAZWY_STATUSOW[s.status] || s.status) + '</span>'
+        : '<span style="color:var(--szary);font-size:.88rem">Notatka</span>') +
+    '</div>' +
+
+    (info.length
+      ? '<div class="szcz-blok">' + info.map(([k,w]) =>
+          '<div class="szcz-rzad"><span class="k">' + esc(k) + '</span>' +
+          '<span class="w">' + esc(w) + '</span></div>').join('') + '</div>'
+      : '') +
+
+    (s.notatka
+      ? '<div class="szcz-blok"><h3>Notatka</h3><div style="white-space:pre-wrap">' +
+        esc(s.notatka) + '</div></div>'
+      : '') +
+
+    (kroki.length
+      ? '<div class="szcz-blok"><h3>Następny krok</h3><div class="kroki">' +
+        kroki.map(([st,txt,wyr]) =>
+          '<button data-status="' + st + '"' + (wyr ? ' class="wyroznij"' : '') + '>' +
+          esc(txt) + '</button>').join('') + '</div></div>'
+      : '') +
+
+    (przypomnienia ? '<div class="szcz-blok">' + przypomnienia + '</div>' : '') +
+
+    (s.historia && s.historia.length
+      ? '<div class="szcz-blok"><h3>Historia</h3><ul class="historia">' +
+        s.historia.map(h =>
+          '<li>' + esc(h.tekst) +
+          '<span class="kiedy">' + new Date(h.kiedy).toLocaleString('pl-PL',
+            {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) + '</span></li>'
+        ).join('') + '</ul></div>'
+      : '') +
+
+    '<div class="przyciski">' +
+      '<button class="btn btn-drugi" id="btn-edytuj">Edytuj</button>' +
+      '<button class="btn btn-usun" id="btn-usun">Usuń</button>' +
+    '</div>';
+
+  // ── obsługa przycisków w oknie szczegółów ──
+  $$('#szcz-tresc [data-status]').forEach(b => {
+    b.addEventListener('click', () => zmienStatus(s, b.dataset.status));
+  });
+  $$('#szcz-tresc [data-przyp]').forEach(b => {
+    b.addEventListener('click', () => {
+      const v = b.dataset.przyp;
+      s.nastepny = (v === 'brak') ? '' : zaDni(Number(v));
+      dopiszHistorie(s, v === 'brak' ? 'Zdjęte przypomnienie'
+                                     : 'Przypomnienie na ' + ladnaData(s.nastepny));
+      zapisz(); odswiez(); pokazSzczegoly(s.id);
+      powiadom(v === 'brak' ? 'Bez przypomnienia' : 'Przypomnę ' + opisTerminu(s.nastepny));
+    });
+  });
+  $('#btn-edytuj').addEventListener('click', () => otworzEdycje(s));
+  $('#btn-usun').addEventListener('click', () => {
+    if(!confirm('Usunąć „' + s.tytul + '" na zawsze?')) return;
+    sprawy = sprawy.filter(x => x.id !== s.id);
+    zapisz(); odswiez(); zamknij('okno-szcz');
+    powiadom('Usunięte');
+  });
+
+  otworz('okno-szcz');
+}
+
+function zmienStatus(s, nowy){
+  // przegraną warto opisać — po miesiącu wiadomo, gdzie się sypie
+  if(nowy === 'przegrane'){
+    const p = prompt('Dlaczego przegrane? (cena / termin / brak odpowiedzi / inne)', 'cena');
+    if(p === null) return;
+    s.powod = p.trim() || 'nie podano';
+  }
+  if(nowy === 'nowe' && s.status === 'przegrane') delete s.powod;
+
+  s.status = nowy;
+  s.zmieniono = new Date().toISOString();
+
+  // po wysłaniu oferty follow-up sam ustawia się na +3 dni
+  if(nowy === 'oferta'){
+    s.nastepny = zaDni(3);
+    dopiszHistorie(s, 'Oferta wysłana — przypomnę za 3 dni');
+    powiadom('Przypomnę za 3 dni');
+  }else if(nowy === 'negocjacje'){
+    s.nastepny = zaDni(2);
+    dopiszHistorie(s, 'Negocjacje — przypomnę za 2 dni');
+    powiadom('Przypomnę za 2 dni');
+  }else if(['wygrane','przegrane','zrobione'].includes(nowy)){
+    s.nastepny = '';
+    dopiszHistorie(s, NAZWY_STATUSOW[nowy] + (s.powod ? ' — ' + s.powod : ''));
+    powiadom(nowy === 'wygrane' ? 'Świetnie 🎉' : 'Zamknięte');
+  }else{
+    dopiszHistorie(s, 'Status: ' + NAZWY_STATUSOW[nowy]);
+  }
+
+  zapisz();
+  odswiez();
+  pokazSzczegoly(s.id);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EKSPORT / IMPORT / CZYSZCZENIE
+   ═══════════════════════════════════════════════════════════════ */
+$('#btn-eksport').addEventListener('click', () => {
+  const paczka = {
+    aplikacja: 'kokpit-iswc',
+    wersja: 1,
+    kiedy: new Date().toISOString(),
+    sprawy: sprawy
+  };
+  const blob = new Blob([JSON.stringify(paczka, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'kokpit-' + dzisISO() + '.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  powiadom('Zapisane do Pobranych');
+});
+
+$('#btn-import').addEventListener('click', () => $('#plik-import').click());
+
+$('#plik-import').addEventListener('change', e => {
+  const plik = e.target.files[0];
+  if(!plik) return;
+  const czyt = new FileReader();
+  czyt.onload = () => {
+    try{
+      const p = JSON.parse(czyt.result);
+      const wczytane = Array.isArray(p) ? p : p.sprawy;
+      if(!Array.isArray(wczytane)) throw new Error('zły format');
+
+      // scalanie po id — nie gubimy tego, co już jest na tym urządzeniu
+      const mam = new Set(sprawy.map(s => s.id));
+      let nowych = 0;
+      wczytane.forEach(s => {
+        if(s && s.id && !mam.has(s.id)){ sprawy.push(s); nowych++; }
+      });
+      zapisz();
+      odswiez();
+      powiadom(nowych ? 'Dodano ' + nowych + ' spraw' : 'Wszystko już było');
+    }catch(err){
+      powiadom('Nie mogę odczytać tego pliku');
+    }
+    e.target.value = '';
+  };
+  czyt.readAsText(plik);
+});
+
+$('#btn-wyczysc').addEventListener('click', () => {
+  if(!confirm('Usunąć WSZYSTKIE sprawy z tego urządzenia? Tego nie da się cofnąć.')) return;
+  if(!confirm('Na pewno? Zrobiłeś eksport?')) return;
+  sprawy = [];
+  zapisz();
+  odswiez();
+  powiadom('Wyczyszczone');
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   START
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  const d = new Date();
+  const dni = ['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
+  $('#dzis-data').textContent =
+    dni[d.getDay()] + ', ' + d.getDate() + ' ' + MIESIACE[d.getMonth()];
+})();
+
+wczytaj();
+odswiez();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
