@@ -45,21 +45,12 @@ w nagłówku i obraca strzałkę ewakuacyjną (`lewo` / `prawo` / `prosto`).
 Statystyki: GoatCounter, zliczanie osobno per pokój, bez cookies.
 Panel: `https://iswc-hotel.goatcounter.com`.
 
-### `kokpit/` — kokpit sprzedażowo-operacyjny
-Aplikacja PWA (instalowana na iPhonie i Windows) dla właściciela repo, nie dla gości.
-Zapytania od firm, zadania, notatki i pilnowanie follow-upów.
+### Czego tu NIE ma — kokpit sprzedażowy
+Aplikacja do zapytań od firm, zadań i follow-upów mieszka w **osobnym,
+prywatnym repozytorium `iswc-kokpit`**. Nie przenoś jej tutaj: obsługuje
+nazwy firm, stawki negocjowane i kontakty, a to repo jest publiczne.
 
-- `index.html` — całość aplikacji w jednym pliku
-- `sw.js` — service worker, zasięg ograniczony do `/kokpit/`, żeby nie ruszał informatora
-- `manifest.webmanifest`, `ikona-*.png`
-
-**Dane wyłącznie w `localStorage` przeglądarki.** Nic nie jest wysyłane
-i nic nie trafia do repo — dlatego publiczne repo jest tu bezpieczne.
-Gdyby kiedyś doszła synchronizacja między urządzeniami albo agent zbierający
-dane, dane klientów muszą pójść do osobnego, prywatnego repo.
-
-> **Po każdej zmianie `kokpit/index.html` podnieś `WERSJA` w `kokpit/sw.js`.**
-> Bez tego telefony serwują starą wersję z pamięci i poprawki nie docierają.
+Tutaj trafia wyłącznie to, co ma prawo zobaczyć gość hotelowy.
 
 ### Pozostałe
 `regulamin_hotelu.pdf`, `hotel_regulations.pdf` — regulaminy linkowane z informatora.
@@ -74,12 +65,10 @@ Nie ma testów ani builda. Podgląd lokalny:
 python3 -m http.server 8899
 # potem w przeglądarce:
 #   http://localhost:8899/informator.html
-#   http://localhost:8899/kokpit/
 ```
 
-Przy zmianach w informatorze przejdź wszystkie pięć języków.
-Przy zmianach w Kokpicie sprawdź na wąskim ekranie (tryb telefonu w przeglądarce) —
-to jest aplikacja przede wszystkim mobilna.
+Przy zmianach w informatorze przejdź wszystkie pięć języków — i sprawdź
+na wąskim ekranie, bo gość czyta to na telefonie.
 
 ## Konwencje
 
