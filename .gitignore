@@ -8,3 +8,17 @@ generator-qr.html
 # zdjęcia robocze (zawieszki, ulotki itp.)
 *.jpeg
 Panel_KLIMA.jpg
+
+# ══════════════════════════════════════════════════════════════
+#  UWAGA: TO REPOZYTORIUM JEST PUBLICZNE (GitHub Pages).
+#  Wszystko, co tu zacommitujesz, jest widoczne w internecie.
+#  Ponizsze reguly to siatka bezpieczenstwa — blokuja formaty,
+#  w ktorych zwykle trzymamy materialy wewnetrzne.
+# ══════════════════════════════════════════════════════════════
+Generator*.pdf
+*.docx
+*.xlsx
+*.xlsm
+*.csv
+*.txt
+!.nojekyll
