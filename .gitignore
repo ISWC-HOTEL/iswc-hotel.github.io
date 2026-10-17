@@ -22,3 +22,6 @@ Generator*.pdf
 *.csv
 *.txt
 !.nojekyll
+
+# statystyki odwiedzin GoatCounter (eksport) - repo jest PUBLICZNE, nie publikujemy
+export/
