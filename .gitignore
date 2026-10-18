@@ -25,3 +25,7 @@ Generator*.pdf
 
 # statystyki odwiedzin GoatCounter (eksport) - repo jest PUBLICZNE, nie publikujemy
 export/
+
+# skrypt analizy statystyk i raporty z nich - repo jest PUBLICZNE
+analiza-statystyk.py
+raport-*
