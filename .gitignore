@@ -29,3 +29,6 @@ export/
 # skrypt analizy statystyk i raporty z nich - repo jest PUBLICZNE
 analiza-statystyk.py
 raport-*
+
+# handoff sesji - plik wewnetrzny
+HANDOFF.md
